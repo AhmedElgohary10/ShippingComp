@@ -1,0 +1,42 @@
+﻿@model System.Data.DataTable
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Invoices Index</h2>
+
+
+<div class="mb-2">
+    <input type="text" id="searchClient" placeholder="Search by client name" />
+    <button id="searchBtn" class="btn btn-dark">Search</button>
+</div>
+
+<div id="invoicesTable">
+    @Html.Partial("_InvoicesTable", Model)
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $("#searchBtn").click(function () {
+            var name = $("#searchClient").val();
+            console.log(name);
+
+            $.ajax({
+                url: '/invoice/FilterByClient',
+                type: 'GET',
+                data: { clientName: name },
+                success: function (response) {
+                    $("#invoicesTable").html(response);
+                }
+            });
+        });
+    });
+</script>
+
+<a href="/invoice/add" class="btn btn-primary" >Add Invoice</a>
+
+
+
+

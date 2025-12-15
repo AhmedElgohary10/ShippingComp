@@ -1,0 +1,25 @@
+﻿@model ShippingComp.Models.Shipment
+
+@{
+    ViewBag.Title = "Add";
+}
+
+<h2>Add</h2>
+
+<form class="form-control" action="/Shipment/Add" method="post">
+    <label>Tracking Number</label>
+    <input name="TrackingNumber" value="@(Model == null ? "" : Model.TrackingNumber)" />
+    <br />
+    <label>Shipment Date</label>
+    <input type="datetime-local" name="ShipmentDate" value="@(Model == null ? DateTime.Now : Model.ShipmentDate)" />
+    <br />
+    <label>Weight</label>
+    <input name="Weight" value="@(Model == null ? 0.0 : Model.Weight)" />
+    <br />
+    <label>Shipment Owner</label>
+    <input name="ClientId" value="@(Model == null ? 0 : Model.ClientId)" />
+    <br />
+    <input type="submit" class="btn btn-success" />
+</form>
+
+

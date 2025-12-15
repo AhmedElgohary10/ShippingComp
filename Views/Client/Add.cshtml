@@ -1,0 +1,42 @@
+﻿@using ShippingComp.Models
+@model Client
+
+@{
+    ViewBag.Title = "Add";
+}
+
+<h2>Add</h2>
+
+<!--
+<form action="/client/add" method="post">
+    <label>Name</label>
+    <input type="text" name="name" id="name" value="@Model?.Name" />
+    <br />
+    <label>Address</label>
+    <input type="text" name="address" id="address" value="@Model?.Address" />
+    <br />
+    <label>Phone</label>
+    <input type="text" name="phone" id="phone" value="@Model?.Phone" />
+    <br />
+    <input type="submit" />
+</form>
+-->
+
+<!--Form Using HTML Helpers-->
+@using (Html.BeginForm("Add", "Client", FormMethod.Post))
+{
+    @Html.LabelFor(m => m.Name)
+    @Html.TextBoxFor(m => m.Name)
+    @Html.ValidationMessageFor(m => m.Name)
+    <br />
+    @Html.LabelFor(m => m.Address)
+    @Html.TextBoxFor(m => m.Address)
+    @Html.ValidationMessageFor(m => m.Address)
+    <br />
+    @Html.LabelFor(m => m.Phone)
+    @Html.TextBoxFor(m => m.Phone)
+    @Html.ValidationMessageFor(m => m.Phone)
+    <br />
+    <input type="submit" class="btn btn-success" value="Add" />
+}
+

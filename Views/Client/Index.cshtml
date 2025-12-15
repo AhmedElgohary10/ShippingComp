@@ -1,0 +1,36 @@
+﻿@using System.Data
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            @foreach (DataColumn col in ViewBag.Clients.Columns)
+            {
+                <th>@col.ColumnName</th>
+            }
+                <th>Action 1</th>
+                <th>Action 2</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (DataRow row in ViewBag.Clients.Rows)
+        {
+            <tr>
+                @foreach (var item in row.ItemArray)
+                {
+                    <td>@item</td>
+                }
+                <td><a href="/Client/Edit/@row["id"]" class="btn btn-info">Edit</a></td>
+                <td><a href="/Client/Delete/@row["id"]" class="btn btn-danger">Delete</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+   
+<a href="/client/add" class="btn btn-primary">Add New Client</a>

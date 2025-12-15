@@ -1,0 +1,13 @@
+﻿@using System.Data
+@model DataTable
+
+
+<div class="form-group">
+    <label class="control-label col-md-2">Shipments</label>
+    <select>
+        @foreach (DataRow item in Model.Rows)
+        {
+            <option value="@item.ItemArray[0]">@item.ItemArray[1]</option>
+        }
+    </select>
+</div>
