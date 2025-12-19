@@ -21,6 +21,6 @@ namespace ShippingComp.Models
         [ForeignKey("shipmentOwner")]
         public int ClientId { get; set; }
 
-        Client shipmentOwner;
+        //Client shipmentOwner;
     }
 }

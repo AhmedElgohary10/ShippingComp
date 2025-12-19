@@ -1,0 +1,194 @@
+﻿@using System.Data
+@using ShippingComp.ViewModels
+@model PaymentsDataTable_With_ClientsListViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2 class="">Payments Index</h2>
+
+<div class="my-3">
+    <label>Filter by client</label>
+    <select id="filterByClient">
+        <option>all</option>
+        @foreach (DataRow row in Model.Clients.Rows)
+        {
+            <option>@row.ItemArray[1]</option>
+        }
+    </select>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            @foreach (DataColumn col in Model.Payments.Columns)
+            {
+                <th>@col.ColumnName</th>
+            }
+        </tr>
+    </thead>
+    <tbody id="filteredtBody">
+        @foreach (DataRow row in Model.Payments.Rows)
+        {
+            <tr>
+                @foreach (var item in row.ItemArray)
+                {
+                    <td>@item</td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    Add payment
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="Modaltitle">Check Invoice Id First!</h1>
+                <button type="button" id="closeModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="container mt-4">
+
+                    <div id="checkInvoiceExist">
+                        <div class="row mb-3">
+                            <div class="col-md-4 col-sm-4">
+                                <label class="form-label">Invoice Id</label>
+                            </div>
+                            <div class="col-md-6 col-sm-8">
+                                <input type="number" name="invoiceid" id="invoiceid" class="form-control" />
+                            </div>
+                            <div class="col-md-6 col-sm-8">
+                                <span id="noInvoice_Warning" hidden class="text-danger">There is NO invoice with this id</span>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="checkInvoiceExistBtn">Check</button>
+                    </div>
+
+                    <div id="addPayment">
+                        <div class="row mb-3">
+                            <div class="col-md-4 col-sm-4">
+                                <label class="form-label">Amount</label>
+                            </div>
+                            <div class="col-md-6 col-sm-8">
+                                <input type="number" name="amountpaid" id="amountpaid" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 col-sm-4">
+                                <label class="form-label">Payment Date</label>
+                            </div>
+                            <div class="col-md-6 col-sm-8">
+                                <input type="date" name="paymentdate" id="paymentdate" class="form-control" />
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="submitPayment">Submit</button>
+                    </div>
+
+                </form>
+            </div>
+            @*<div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>*@
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<script>
+    $(document).ready(function () {
+        //user chooses client name to filter payments table by
+        $("#filterByClient").change(function () {
+            $.ajax({
+                url: "/payment/FilterPaymentsByClient",
+                type: 'get',
+                data: { client_name: this.value },
+                dataType: 'html',
+                success: function (response) {
+                    $("#filteredtBody").html(response);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
+
+        //user adds new payment
+        $("#addPayment").hide(); //hide new payment inputs to check if invoice exists or not
+
+        var invoiceId;
+
+        $("#checkInvoiceExistBtn").click(function () {
+            invoiceId = $("#invoiceid").val();
+            if (invoiceId != '') {
+                $.ajax({
+                    url: `/invoice/CheckInvoiceExist/${invoiceId}`,
+                    type: 'get',
+                    success: function (res) {
+                        console.log(res);
+                        if (res == 'False') {
+                            $("#noInvoice_Warning").removeAttr('hidden');
+                        }
+                        else if (res == 'True') {
+                            $("#noInvoice_Warning").attr('hidden');
+                            console.log("yes yes yes");
+                            $("#addPayment").show();
+                            $("#checkInvoiceExist").hide();
+                        }
+                    },
+                });
+            }
+        });
+
+        $("#submitPayment").click(function () {
+            var amountPaid = $("#amountpaid").val();
+            var paymentDate = $("#paymentdate").val();
+
+            if (amountPaid == '' || paymentDate == '') {
+                console.log("data aint complete to make this payment my dawg");
+            }
+            else {
+                console.log(paymentDate);
+
+                $.ajax({
+                    url: "/payment/AddPayment",
+                    type: "post",
+                    data: {
+                        invoiceId,
+                        amountPaid,
+                        paymentDate
+                    },
+                    success: function (response) {
+                        $("#filteredtBody").html(response);
+                        $("#closeModal").trigger('click');
+                    },
+                });
+
+                console.log("payment done successfully with these data:");
+                console.log(invoiceId);
+                console.log(amountPaid);
+                console.log(paymentDate);
+                $("#amountpaid").val('');
+                $("#paymentdate").val('');
+            }
+        });
+    });
+</script>
+
+

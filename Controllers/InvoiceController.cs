@@ -117,5 +117,20 @@ namespace ShippingComp.Controllers
 
             return PartialView("_ShipmentsDropDownList",shipments);
         }
+
+        public bool CheckInvoiceExist(int id)
+        {
+            SqlCommand cmd = new SqlCommand("select count(*) from invoices where id = @id", con);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            con.Open();
+            int exist = (int)cmd.ExecuteScalar();
+            con.Close();
+
+            if (exist == 1)
+                return true;
+            else
+                return false;
+        }
     }
 }

@@ -1,0 +1,13 @@
+﻿@using System.Data
+@model DataTable
+
+@foreach (DataRow row in Model.Rows)
+{
+    <tr>
+        @foreach (var item in row.ItemArray)
+        {
+            <td>@item</td>
+        }
+    </tr>
+}
+
