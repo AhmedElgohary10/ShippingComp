@@ -61,21 +61,46 @@ namespace ShippingComp.Controllers
             return View("Add");
         }
 
+        //[HttpPost]
+        //public ActionResult AddWithoutInvoice(Shipment shFromReq)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        SqlCommand cmd = new SqlCommand("insert into shipments values(@tnum,@sdate,@w,@cid)", con);
+        //        cmd.Parameters.AddWithValue("@tnum", shFromReq.TrackingNumber);
+        //        cmd.Parameters.AddWithValue("@sdate", shFromReq.ShipmentDate);
+        //        cmd.Parameters.AddWithValue("@w", shFromReq.Weight);
+        //        cmd.Parameters.AddWithValue("@cid", shFromReq.ClientId);
+
+        //        con.Open();
+
+        //        cmd.ExecuteNonQuery();
+
+        //        con.Close();
+
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    return View("Add", shFromReq);
+        //}
+
         [HttpPost]
         public ActionResult Add(Shipment shFromReq)
         {
             if (ModelState.IsValid)
             {
-                SqlCommand cmd = new SqlCommand("insert into shipments values(@tnum,@sdate,@w,@cid)", con);
-                cmd.Parameters.AddWithValue("@tnum", shFromReq.TrackingNumber);
-                cmd.Parameters.AddWithValue("@sdate", shFromReq.ShipmentDate);
-                cmd.Parameters.AddWithValue("@w", shFromReq.Weight);
-                cmd.Parameters.AddWithValue("@cid", shFromReq.ClientId);
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = con;
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "sp_AddShipmentAndInvoice";
+                cmd.Parameters.AddWithValue("@trackingnumber", shFromReq.TrackingNumber);
+                SqlParameter shipmentdateParameter = new SqlParameter("@shipmentdate", shFromReq.ShipmentDate);
+                cmd.Parameters.Add(shipmentdateParameter);
+                cmd.Parameters.Add("@weight", SqlDbType.Decimal).Value = shFromReq.Weight;
+                cmd.Parameters.Add(new SqlParameter("@clientid", shFromReq.ClientId));
 
                 con.Open();
-
                 cmd.ExecuteNonQuery();
-
                 con.Close();
 
                 return RedirectToAction("Index");
