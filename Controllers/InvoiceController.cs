@@ -118,19 +118,29 @@ namespace ShippingComp.Controllers
             return PartialView("_ShipmentsDropDownList",shipments);
         }
 
-        public bool CheckInvoiceExist(int id)
+        public double CheckInvoiceExistThenStatus(int id)
         {
-            SqlCommand cmd = new SqlCommand("select count(*) from invoices where id = @id", con);
+            SqlCommand cmd = new SqlCommand("select status, [Amount to pay] from InvoicesAndAmountPaid where [Invoice Id] = @id", con);
             cmd.Parameters.AddWithValue("@id", id);
 
             con.Open();
-            int exist = (int)cmd.ExecuteScalar();
+            SqlDataReader queryReader = cmd.ExecuteReader();
+            DataTable queryResult = new DataTable();
+            queryResult.Load(queryReader);
             con.Close();
 
-            if (exist == 1)
-                return true;
+            if (queryResult.Rows.Count == 0)
+                return -1; //invoice with this id doesnt exist
+
+            string invoiceStatus = queryResult.Rows[0][0].ToString();
+            double amountToPay = Convert.ToDouble(queryResult.Rows[0][1]);   
+
+            if (invoiceStatus == "Unpaid" || invoiceStatus == "Partial")
+                return amountToPay;
             else
-                return false;
+                return -2; //invoice with this id is paid
         }
+
+
     }
 }

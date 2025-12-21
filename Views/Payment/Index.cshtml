@@ -69,10 +69,11 @@
                                 <input type="number" name="invoiceid" id="invoiceid" class="form-control" />
                             </div>
                             <div class="col-md-6 col-sm-8">
-                                <span id="noInvoice_Warning" hidden class="text-danger">There is NO invoice with this id</span>
+                                <span id="invoice_check_span" class="text-danger"></span>
                             </div>
                         </div>
                         <button type="button" class="btn btn-primary" id="checkInvoiceExistBtn">Check</button>
+                        <button type="button" class="btn btn-primary" id="proceedToPay">Proceed to pay</button>
                     </div>
 
                     <div id="addPayment">
@@ -131,6 +132,7 @@
 
         //user adds new payment
         $("#addPayment").hide(); //hide new payment inputs to check if invoice exists or not
+        $("#proceedToPay").hide();
 
         var invoiceId;
 
@@ -138,23 +140,33 @@
             invoiceId = $("#invoiceid").val();
             if (invoiceId != '') {
                 $.ajax({
-                    url: `/invoice/CheckInvoiceExist/${invoiceId}`,
+                    url: `/invoice/CheckInvoiceExistThenStatus/${invoiceId}`,
                     type: 'get',
                     success: function (res) {
                         console.log(res);
-                        if (res == 'False') {
-                            $("#noInvoice_Warning").removeAttr('hidden');
+                        if (res == -1) {
+                            $("#proceedToPay").hide();
+                            $("#invoice_check_span").text("There is NO invoice with this id");
                         }
-                        else if (res == 'True') {
-                            $("#noInvoice_Warning").attr('hidden');
-                            console.log("yes yes yes");
-                            $("#addPayment").show();
-                            $("#checkInvoiceExist").hide();
+                        else if (res == -2) {
+                            $("#proceedToPay").hide();
+                            $("#invoice_check_span").text("This invoice is fully paid");
+                        }
+                        else {
+                            $("#invoice_check_span").text("amount to pay is: " + res);
+                            $("#checkInvoiceExistBtn").show();
+                            $("#proceedToPay").show();
                         }
                     },
                 });
             }
         });
+
+        $("#proceedToPay").click(function () {
+            $("#addPayment").show();
+            $("#checkInvoiceExist").hide();
+        });
+
 
         $("#submitPayment").click(function () {
             var amountPaid = $("#amountpaid").val();
