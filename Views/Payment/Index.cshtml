@@ -19,7 +19,7 @@
     </select>
 </div>
 
-<table class="table table-bordered">
+<table class="table table-bordered table-hover">
     <thead>
         <tr>
             @foreach (DataColumn col in Model.Payments.Columns)
@@ -114,6 +114,9 @@
 
 <script>
     $(document).ready(function () {
+        $("#PaymentsTab > a").addClass("active");
+
+
         //user chooses client name to filter payments table by
         $("#filterByClient").change(function () {
             $.ajax({
@@ -167,7 +170,6 @@
             $("#checkInvoiceExist").hide();
         });
 
-
         $("#submitPayment").click(function () {
             var amountPaid = $("#amountpaid").val();
             var paymentDate = $("#paymentdate").val();
@@ -200,7 +202,14 @@
                 $("#paymentdate").val('');
             }
         });
+
+
+
     });
 </script>
+
+<style>
+
+</style>
 
 

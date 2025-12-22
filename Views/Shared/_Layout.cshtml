@@ -18,15 +18,15 @@
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
+            <div id="navTabs" class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+                <ul class="nav nav-pills navbar-nav flex-grow-1 ">
                     @*<li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                 <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                 <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>*@
-                    <li>@Html.ActionLink("Clients", "Index", "Client", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Shipments", "Index", "Shipment", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Invoices", "Index", "Invoice", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Payments", "Index", "Payment", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li id="ClientsTab" class="nav-item">@Html.ActionLink("Clients", "Index", "Client", new { area = "" }, new { @class = "nav-link " })</li>
+                    <li id="ShipmentsTab" class="nav-item">@Html.ActionLink("Shipments", "Index", "Shipment", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li id="InvoicesTab" class="nav-item">@Html.ActionLink("Invoices", "Index", "Invoice", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li id="PaymentsTab" class="nav-item" >@Html.ActionLink("Payments", "Index", "Payment", new { area = "" }, new { @class = "nav-link" })</li>
                 </ul>
             </div>
         </div>
