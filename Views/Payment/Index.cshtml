@@ -6,6 +6,23 @@
     ViewBag.Title = "Index";
 }
 
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    table {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        width: 100%;
+        padding: 20px;
+    }
+
+</style>
+
+
 <h2 class="">Payments Index</h2>
 
 <div class="my-3">
@@ -19,7 +36,7 @@
     </select>
 </div>
 
-<table class="table table-bordered table-hover">
+<table class="table table-bordered table-hover table-container">
     <thead>
         <tr>
             @foreach (DataColumn col in Model.Payments.Columns)
@@ -31,7 +48,7 @@
     <tbody id="filteredtBody">
         @foreach (DataRow row in Model.Payments.Rows)
         {
-            <tr>
+            <tr id="@row.ItemArray[0]" class="invoiceRow">
                 @foreach (var item in row.ItemArray)
                 {
                     <td>@item</td>
@@ -99,8 +116,8 @@
                 </form>
             </div>
             @*<div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>*@
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>*@
         </div>
     </div>
 </div>
@@ -204,12 +221,24 @@
         });
 
 
+        $(".invoiceRow").click(function () {
+            var id = $(this)[0].attributes[0].value;
+            console.log(id);
+
+            $.ajax({
+                url: `/payment/GetAllPaymentsForThisInvoice/${id}`,
+                type: "post",
+                success: function (res) {
+                    console.log(res);
+                },
+            });
+        });
+
 
     });
 </script>
 
 <style>
-
 </style>
 
 

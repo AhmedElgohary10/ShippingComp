@@ -1,4 +1,5 @@
 ﻿using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json;
 using ShippingComp.Models;
 using ShippingComp.ViewModels;
 using System;
@@ -112,5 +113,19 @@ namespace ShippingComp.Controllers
             else
                 return RedirectToAction("FilterPaymentsByClient");
         }
+
+        public JsonResult GetAllPaymentsForThisInvoice(int id)
+        {
+            SqlCommand cmd = new SqlCommand("select * from payments where invoiceid = @id", con);
+            cmd.Parameters.AddWithValue("@id", id);
+            con.Open();
+            SqlDataReader reader =  cmd.ExecuteReader();
+            DataTable payments = new DataTable();
+            payments.Load(reader);
+            con.Close();
+
+            return Json(payments);
+        }
+
     }
 }
