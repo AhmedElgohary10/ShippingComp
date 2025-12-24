@@ -1,0 +1,33 @@
+﻿@using System.Data
+@model DataTable
+
+<table id="paymentsTable" class="table table-bordered table-hover table-container">
+    <thead>
+        <tr>
+            @foreach (DataColumn column in Model.Columns)
+            {
+                if (Model.Columns[Model.Columns.Count - 1] == column)
+                {
+                    <th>@column.ColumnName</th>
+                    @*<th><button id="invoiceDetailsCloseBtn" class="btn btn-close"></button></th>*@
+                }
+                else
+                {
+                    <th>@column.ColumnName</th>
+                }
+            }
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (DataRow row in Model.Rows)
+        {
+            <tr>
+                @foreach (var item in row.ItemArray)
+                {
+                    <td>@item</td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

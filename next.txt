@@ -1,0 +1,23 @@
+do:
+- pagination
+- fast report?
+- extract as excel or pdf
+- Add "Email Statement" button that:
+	Generates PDF
+	Sends via SMTP
+	Logs the action in an audit table
+- add currency table in db and use it in invoice and payment views 
+- use sp with output parameters in ado
+- make good readme on github
+- Add date range filtering
+- refund feature
+- click any invoice to See ALL payments against it (drill down menue or smth, maybe modal)
+- address payment date, shipment date, invoice date
+- error logging
+- later later later try make ui using wordpress
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+done:
+- filter: search by name (ajax, partial view)
+- current tab highlight (clients, shipments, etc)
+

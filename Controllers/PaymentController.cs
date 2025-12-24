@@ -114,7 +114,9 @@ namespace ShippingComp.Controllers
                 return RedirectToAction("FilterPaymentsByClient");
         }
 
-        public JsonResult GetAllPaymentsForThisInvoice(int id)
+
+        //to display all payments for an invoice
+        public ActionResult GetAllPaymentsForThisInvoice(int id)
         {
             SqlCommand cmd = new SqlCommand("select * from payments where invoiceid = @id", con);
             cmd.Parameters.AddWithValue("@id", id);
@@ -124,7 +126,7 @@ namespace ShippingComp.Controllers
             payments.Load(reader);
             con.Close();
 
-            return Json(payments);
+            return PartialView("_AllPaymentsForAnInvoice", payments);
         }
 
     }

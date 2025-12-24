@@ -198,6 +198,7 @@
     <Content Include="Views\Invoice\_ShipmentsDropDownList.cshtml" />
     <Content Include="Views\Payment\Index.cshtml" />
     <Content Include="Views\Payment\_PaymentsForCertainClient.cshtml" />
+    <Content Include="Views\Payment\_AllPaymentsForAnInvoice.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

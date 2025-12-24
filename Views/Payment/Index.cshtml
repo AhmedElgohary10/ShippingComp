@@ -19,7 +19,6 @@
         width: 100%;
         padding: 20px;
     }
-
 </style>
 
 
@@ -58,7 +57,10 @@
     </tbody>
 </table>
 
-
+<div id="invoiceDetails" style="display:flex">
+    <button id="invoiceDetailsCloseBtn" class="btn btn-close"></button>
+    <div id="the_table"></div>
+</div>
 
 
 <!-- Button trigger modal -->
@@ -153,6 +155,8 @@
         //user adds new payment
         $("#addPayment").hide(); //hide new payment inputs to check if invoice exists or not
         $("#proceedToPay").hide();
+        $("#invoiceDetails").hide();
+
 
         var invoiceId;
 
@@ -220,7 +224,6 @@
             }
         });
 
-
         $(".invoiceRow").click(function () {
             var id = $(this)[0].attributes[0].value;
             console.log(id);
@@ -229,16 +232,18 @@
                 url: `/payment/GetAllPaymentsForThisInvoice/${id}`,
                 type: "post",
                 success: function (res) {
-                    console.log(res);
+                    $("#the_table").html(res);
                 },
             });
+            $("#invoiceDetails").show();
         });
 
+        $("#invoiceDetailsCloseBtn").click(function () {
+            console.log("close btn clicked");
+            $("#the_table").html("");
+            $("#invoiceDetails").hide();
+        });
 
     });
 </script>
-
-<style>
-</style>
-
 
