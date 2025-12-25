@@ -27,15 +27,11 @@ namespace ShippingComp.Controllers
         public ActionResult Index()
         {
             //ADO Disconnected Mode (in memory data manipulation, then save to actual DB)
-
             //1 define sql connection (done in constructor above)
-
             //2 define command
             SqlCommand cmd = new SqlCommand("select * from clients", con);
-
             //3 definde data adapter
             SqlDataAdapter da = new SqlDataAdapter(cmd);
-
             //4 define data table (in memory table)
             DataTable dt = new DataTable();
 
@@ -47,22 +43,19 @@ namespace ShippingComp.Controllers
                    * dt.Rows[0] => DataRow => .ItemArray .IsNull() .Delete()
              */
 
-
             //5 fill data
             da.Fill(dt);
-
             //6 use data
             ViewBag.Clients = dt;
 
             return View();
         }
 
-        [HttpGet]
-        public ActionResult Add()
-        {
-            return View("Add");
-        }
-
+        //[HttpGet]
+        //public ActionResult Add()
+        //{
+        //    return View("Add");
+        //}
 
         [HttpPost]
         public ActionResult Add(Client cFromReq)
@@ -98,45 +91,72 @@ namespace ShippingComp.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult GetById(int id)
+        [HttpPost]
+        public ActionResult AjaxAdd(string name, string address, string phone)
         {
-            //1 define sql connection (done in constructor above)
+            if (name == "" || address == "" || phone == "")
+            {
+                return HttpNotFound("data arent complete to make the insert");
+            }
 
-            //2 define command
-            string query = "select * from clients where id=@id";
-            SqlCommand cmd = new SqlCommand(query, con);
-            cmd.Parameters.AddWithValue("@id", id);
+            SqlCommand addClient = new SqlCommand("insert into clients values(@n,@a,@p)", con);
+            addClient.Parameters.AddWithValue("@n", name);
+            addClient.Parameters.AddWithValue("@a", address);
+            addClient.Parameters.AddWithValue("@p", phone);
 
-            //3 open connection 
+            SqlCommand getAllClients = new SqlCommand("select * from clients", con);
+
             con.Open();
 
-            //4 execute commands
-            SqlDataReader dr = cmd.ExecuteReader();
+            int rowsAffected = addClient.ExecuteNonQuery();
+            SqlDataReader dr = getAllClients.ExecuteReader();
+            DataTable allClientsList = new DataTable();
+            allClientsList.Load(dr);
 
-            //5.1 databind
-            Client c1 = new Client();
-            dr.Read();
-            c1.Id = (int)dr["id"];
-            c1.Name = dr["name"].ToString();
-            c1.Address = dr["address"].ToString();
-            c1.Phone = dr["phone"].ToString();
-
-            //5.2 databind to data table
-            DataTable dt = new DataTable();
-            dt.Load(dr);
-            /*DataTable structure:
-                * dt.Columns => DataColumnCollection => .Add() .Remove() .Count
-                   * dt.Columns[0] => DataColumn => .ColumnName .DataType
-
-                * dt.Rows => DataRowCollection => .Add() .Remove() .Find() .Count
-                   * dt.Rows[0] => DataRow => .ItemArray .IsNull() .Delete()
-             */
-
-            //6 close connection
             con.Close();
 
-            return Content(c1.ToString());
+            return PartialView("_AllClientsList", allClientsList);
         }
+
+        //public ActionResult GetById(int id)
+        //{
+        //    //1 define sql connection (done in constructor above)
+
+        //    //2 define command
+        //    string query = "select * from clients where id=@id";
+        //    SqlCommand cmd = new SqlCommand(query, con);
+        //    cmd.Parameters.AddWithValue("@id", id);
+
+        //    //3 open connection 
+        //    con.Open();
+
+        //    //4 execute commands
+        //    SqlDataReader dr = cmd.ExecuteReader();
+
+        //    //5.1 databind
+        //    Client c1 = new Client();
+        //    dr.Read();
+        //    c1.Id = (int)dr["id"];
+        //    c1.Name = dr["name"].ToString();
+        //    c1.Address = dr["address"].ToString();
+        //    c1.Phone = dr["phone"].ToString();
+
+        //    //5.2 databind to data table
+        //    DataTable dt = new DataTable();
+        //    dt.Load(dr);
+        //    /*DataTable structure:
+        //        * dt.Columns => DataColumnCollection => .Add() .Remove() .Count
+        //           * dt.Columns[0] => DataColumn => .ColumnName .DataType
+
+        //        * dt.Rows => DataRowCollection => .Add() .Remove() .Find() .Count
+        //           * dt.Rows[0] => DataRow => .ItemArray .IsNull() .Delete()
+        //     */
+
+        //    //6 close connection
+        //    con.Close();
+
+        //    return Content(c1.ToString());
+        //}
 
     }
 }

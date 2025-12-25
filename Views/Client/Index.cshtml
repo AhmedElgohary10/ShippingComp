@@ -6,36 +6,110 @@
 
 <h2>Clients Index</h2>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            @foreach (DataColumn col in ViewBag.Clients.Columns)
-            {
-                <th>@col.ColumnName</th>
-            }
-                @*<th>Action 1</th>
-                <th>Action 2</th>*@
-        </tr>
-    </thead>
 
-    <tbody>
-        @foreach (DataRow row in ViewBag.Clients.Rows)
-        {
+
+<div id="mainTable">
+    <span hidden>this is the table from index action not the partial view that returns from AjaxAdd</span>
+    <table class="table table-bordered">
+        <thead>
             <tr>
-                @foreach (var item in row.ItemArray)
+                @foreach (DataColumn col in ViewBag.Clients.Columns)
                 {
-                    <td>@item</td>
+                    <th>@col.ColumnName</th>
                 }
-                @*<td><a href="/Client/Edit/@row["id"]" class="btn btn-info">Edit</a></td>
-                <td><a href="/Client/Delete/@row["id"]" class="btn btn-danger">Delete</a></td>*@
+                @*<th>Action 1</th>
+                    <th>Action 2</th>*@
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+
+        <tbody>
+            @foreach (DataRow row in ViewBag.Clients.Rows)
+            {
+                <tr>
+                    @foreach (var item in row.ItemArray)
+                    {
+                        <td>@item</td>
+                    }
+                    @*<td><a href="/Client/Edit/@row["id"]" class="btn btn-info">Edit</a></td>
+                        <td><a href="/Client/Delete/@row["id"]" class="btn btn-danger">Delete</a></td>*@
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@*<a href="/client/add" class="btn btn-primary">Add New Client</a>*@
+
+
+
+
+<!-- Button trigger modal -->
+<button type="button" id="closeAddClientModalBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    Add New Client
+</button>
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="Modaltitle">New Client Details</h1>
+                <button type="button" id="closeModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="" action="/client/add" method="post">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Name</label>
+                        <input type="text" class="form-control" name="name" id="name" placeholder="Enter client name" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Address</label>
+                        <input type="text" class="form-control" name="address" id="address" placeholder="Enter client address" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Phone</label>
+                        <input type="text" class="form-control" name="phone" id="phone" placeholder="Enter phone number" />
+                    </div>
+                </form>
+                <button href="client/add" class="btn btn-primary mt-2" id="addClientBtn">Add Client</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
 
 <script>
     $("#ClientsTab > a").addClass("active");
 
+    $(document).ready(function () {
+
+        $("#addClientBtn").click(function () {
+            var name = $("#name").val()
+            var address = $("#address").val()
+            var phone = $("#phone").val()
+
+            $.ajax({
+                url: "/client/ajaxadd",
+                type: "post",
+                data: { name, address, phone },
+                success: function (r) {
+                    $("#name").val(""); $("#address").val(""); $("#phone").val("");
+                    $("#mainTable").html(r);
+                    $("#closeAddClientModalBtn").trigger("click");
+                },
+                error: function (e) {
+                    console.log(e);
+                },
+            })
+
+        })
+
+
+    });
+
+
 </script>
-   
-<a href="/client/add" class="btn btn-primary">Add New Client</a>

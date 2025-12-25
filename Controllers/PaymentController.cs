@@ -90,9 +90,7 @@ namespace ShippingComp.Controllers
             con.Close();
 
             return PartialView("_PaymentsForCertainClient", clients);
-        }
-
-        
+        }              
 
         public ActionResult AddPayment(Payment ajaxP)
         {
@@ -113,7 +111,6 @@ namespace ShippingComp.Controllers
             else
                 return RedirectToAction("FilterPaymentsByClient");
         }
-
 
         //to display all payments for an invoice
         public ActionResult GetAllPaymentsForThisInvoice(int id)

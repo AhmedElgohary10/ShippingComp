@@ -199,6 +199,7 @@
     <Content Include="Views\Payment\Index.cshtml" />
     <Content Include="Views\Payment\_PaymentsForCertainClient.cshtml" />
     <Content Include="Views\Payment\_AllPaymentsForAnInvoice.cshtml" />
+    <Content Include="Views\Client\_AllClientsList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
