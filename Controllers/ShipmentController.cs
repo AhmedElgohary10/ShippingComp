@@ -1,4 +1,5 @@
 ﻿using ShippingComp.Models;
+using ShippingComp.DataAccessLayer;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -11,9 +12,10 @@ using System.Web.Mvc.Ajax;
 
 namespace ShippingComp.Controllers
 {
-    public class ShipmentController : Controller
+    public class ShipmentController : Controller 
     {
         string connectionString = ConfigurationManager.ConnectionStrings["MyConn"].ConnectionString;
+        public DAL dal;
 
         //1 define sql connection
         SqlConnection con;
@@ -21,6 +23,7 @@ namespace ShippingComp.Controllers
         public ShipmentController()
         {
             con = new SqlConnection(connectionString);
+            dal = new DAL();
         }
 
 
@@ -48,6 +51,10 @@ namespace ShippingComp.Controllers
                    * dt.Rows[0] => DataRow => .ItemArray .IsNull() .Delete()
              */
 
+
+            ViewBag.Clients = dal.GetAllClients();
+
+
             //5 fill data
             da.Fill(dt);
 
@@ -55,11 +62,11 @@ namespace ShippingComp.Controllers
             return View(dt);
         }
 
-        [HttpGet]
-        public ActionResult Add()
-        {
-            return View("Add");
-        }
+        //[HttpGet]
+        //public ActionResult Add()
+        //{
+        //    return View("Add");
+        //}
 
         //[HttpPost]
         //public ActionResult AddWithoutInvoice(Shipment shFromReq)
@@ -84,30 +91,39 @@ namespace ShippingComp.Controllers
         //    return View("Add", shFromReq);
         //}
 
+        //[HttpPost]
+        //public ActionResult Add(Shipment shFromReq)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        SqlCommand cmd = new SqlCommand();
+        //        cmd.Connection = con;
+        //        cmd.CommandType = CommandType.StoredProcedure;
+        //        cmd.CommandText = "sp_AddShipmentAndInvoice";
+        //        cmd.Parameters.AddWithValue("@trackingnumber", shFromReq.TrackingNumber);
+        //        SqlParameter shipmentdateParameter = new SqlParameter("@shipmentdate", shFromReq.ShipmentDate);
+        //        cmd.Parameters.Add(shipmentdateParameter);
+        //        cmd.Parameters.Add("@weight", SqlDbType.Decimal).Value = shFromReq.Weight;
+        //        cmd.Parameters.Add(new SqlParameter("@clientid", shFromReq.ClientId));
+
+        //        con.Open();
+        //        cmd.ExecuteNonQuery();
+        //        con.Close();
+
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    return View("Add", shFromReq);
+        //}
+
         [HttpPost]
-        public ActionResult Add(Shipment shFromReq)
+        public void addAjax(decimal weight, int clientid, DateTime shipmentdate)
         {
-            if (ModelState.IsValid)
-            {
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = con;
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "sp_AddShipmentAndInvoice";
-                cmd.Parameters.AddWithValue("@trackingnumber", shFromReq.TrackingNumber);
-                SqlParameter shipmentdateParameter = new SqlParameter("@shipmentdate", shFromReq.ShipmentDate);
-                cmd.Parameters.Add(shipmentdateParameter);
-                cmd.Parameters.Add("@weight", SqlDbType.Decimal).Value = shFromReq.Weight;
-                cmd.Parameters.Add(new SqlParameter("@clientid", shFromReq.ClientId));
+            string query = $"execute sp_AddShipmentAndInvoice {weight}, {clientid}, '{shipmentdate}'";
+            dal.ExecuteDMLquery(query);
 
-                con.Open();
-                cmd.ExecuteNonQuery();
-                con.Close();
-
-                return RedirectToAction("Index");
-            }
-
-            return View("Add", shFromReq);
         }
+
 
     }
 }

@@ -1,11 +1,14 @@
 ﻿@using System.Data
+@using ShippingComp.Models
 @model DataTable
 
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Shipments Index</h2>
+
+
 
 <table class="table table-bordered">
     <thead>
@@ -31,12 +34,103 @@
     </tbody>
 </table>
 
-<a href="/shipment/add" class="btn btn-primary">Add New Shipment</a>
+@*<a href="/shipment/add" class="btn btn-primary">Add New Shipment</a>*@
+
+
+<!-- Button trigger modal -->
+<button type="button" id="closeAddClientModalBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    Add New Shipment
+</button>
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="Modaltitle">New Shipment Details</h1>
+                <button type="button" id="closeModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="createShipmentForm" action="/Shipment/addAjax" method="post">
+                @*<form class="createShipmentForm">*@
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Weight</label>
+                        <input type="text" class="form-control" name="weight" id="weight" placeholder="Enter shipment weight" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Client</label>
+                        <select id="clientid">
+                            <option value="-1">---Choose Client---</option>
+                            @foreach (Client c in ViewBag.Clients)
+                            {
+                                <option value="@c.Id">@c.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Shipment Date</label>
+                        <input type="date" class="form-control" name="shipmentdate" id="shipmentdate" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Shipment Date</label>
+                        <input type="submit" class="btn btn-dark" name="" id="" value="Add Shipment" />
+                    </div>
+                </form>
+                @*<button class="btn btn-primary mt-2" id="addShipmentBtn">Add Shipment</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 
 
 
 <script>
     $("#ShipmentsTab > a").addClass("active");
+
+
+
+    //$("#createShipmentForm").on("submit", function (e) {
+    //    e.preventDefault();
+
+    //    $.ajax({
+    //        url: this.action,
+    //        method: this.method,
+    //        data: $(this).serialize(),
+    //        success: function (res) {
+
+    //        },
+    //        error: function (e) {
+    //            console.log(e)
+    //        }
+    //    })
+    //})
+
+
+
+        $("#addShipmentBtn").click(function () {
+            var weight = $("#weight").val()
+            var clientid = $("#clientid").val()
+            var shipmentdate = $("#shipmentdate").val()
+
+            console.log(weight, clientid, shipmentdate)
+
+            $.ajax({
+                url: "shipment/addAjax",
+                type: "post",
+                data: { weight, clientid, shipmentdate },
+                success: function (res) {
+                    //res = partial view (HTML comming from actionresult from the controller)
+                },
+                error: function (err) {
+
+                }
+            })
+        })
+
+
 
 </script>
 

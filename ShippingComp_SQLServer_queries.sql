@@ -300,19 +300,20 @@ begin catch
 end catch
 
 
-
-alter proc sp_AddShipmentAndInvoice
-@trackingnumber nvarchar(50), @shipmentdate date, @weight decimal(18, 0), @clientid int 
+-- make it use theo sp_AddShipment, which auto create TrackingNumber
+alter proc sp_AddShipmentAndInvoice @weight decimal(18, 0), @clientid int, @shipmentdate date = null
 as
 begin
+	if @shipmentdate is null set @shipmentdate = SYSUTCDATETIME();
+	declare @baseprice decimal = (3.89*@weight+145)
+	declare @tax decimal = @baseprice*0.14
+	declare @shipmentid int
 	begin try
 		begin transaction
-		insert into Shipments values(@trackingnumber, @shipmentdate,@weight, @clientid)
-		declare @baseprice decimal = (0.7*@weight+120)
-		declare @tax decimal = @baseprice*0.14
-		declare @shipmentid int
+		--insert into Shipments values(@trackingnumber, @shipmentdate,@weight, @clientid)
+		execute sp_AddShipment @weight, @clientid, @shipmentdate, @shipmentid output
 		--set @shipmentid = (select id from Shipments where TrackingNumber = @trackingnumber)
-		set @shipmentid = scope_identity()
+		--set @shipmentid = scope_identity()
 		insert into Invoices values(@baseprice,@tax,@shipmentdate,@shipmentid)
 		commit transaction
 	end try
@@ -322,7 +323,7 @@ begin
 	end catch
 end
 
-sp_AddShipmentAndInvoice 'xcsd123', '2-8-2014', 99.9, 1
+sp_AddShipmentAndInvoice 10512, 2044, '12/25/2016'
 
 
 -- make tracking number unique
@@ -357,12 +358,35 @@ where [Invoice Id] = 5
 
 select status from @array
 
+------------------------------------------------------
+-- 4 jan 2026
+--some enhancements on Shipments table
+--ALTER TABLE shipments ALTER COLUMN clientid INT NOT NULL
+--ALTER TABLE shipments ADD DEFAULT SYSUTCDATETIME() FOR ShipmentDate;
+ALTER TABLE shipments ALTER COLUMN TrackingNumber nvarchar(50) NOT NULL
+ALTER TABLE shipments drop UNQ_trackingnumber_shipments
+-- make tracking number unique
+alter table shipments add constraint UNQ_trackingnumber_shipments unique (trackingnumber)
 
 
+-- SP to add shipment, with auto generate TrackingNumber
 
+alter proc sp_AddShipment @w dec, @cId int, @date date, @shipmentid int output
+as
+begin
+	insert into Shipments(ShipmentDate,Weight,ClientId,TrackingNumber) values (@date,@w,@cId,0)
+	--declare @shipmentId int = scope_identity()
+	--select @shipmentid_Output = @shipmentId
+	select @shipmentid = scope_identity();
+	declare @trkNum nvarchar(50) = concat('TRK',@shipmentId,'-',@w)
+	update Shipments set TrackingNumber = @trkNum where id = @shipmentId
+end
 
+declare @gg int
+execute sp_AddShipment 959, 1, '3/13/2004', @gg output
+select @gg
 
-
+-- #now use this sp in sp_AddShipmentAndInvoice above ##done
 
 
 

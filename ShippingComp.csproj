@@ -125,7 +125,7 @@
     <Compile Include="Controllers\InvoiceController.cs" />
     <Compile Include="Controllers\PaymentController.cs" />
     <Compile Include="Controllers\ShipmentController.cs" />
-    <Compile Include="DAL\DAL.cs" />
+    <Compile Include="DataAccessLayer\DAL.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

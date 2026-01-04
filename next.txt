@@ -8,8 +8,9 @@ do:
 - make good readme on github
 - add date range filtering
 - refund feature
-- address payment date, shipment date, invoice date
+- address payment date, shipment date, invoice date format and UTC
 - error logging
+- شركة المجد للشحن الجوي والبحري والبري
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 done:
